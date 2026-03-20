@@ -33,6 +33,7 @@ public class WordList {
                     this.wordBank.add(word);
                 }
             }
+            reader.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
