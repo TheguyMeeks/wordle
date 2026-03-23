@@ -8,19 +8,45 @@ public class Game {
     private int maxAttempts;
 
     public Game(String secretWord) {
-        this.secretWord = secretWord; // stores the secretWord passed into the parameter in the 'box' for the secret word that this game was patiently waiting to use
+        this.secretWord = secretWord.toLowerCase(); // stores the secretWord passed into the parameter in the 'box' for the secret word that this game was patiently waiting to use
         this.guesses = new ArrayList<>(); // empty. will fill as the player plays
         this.maxAttempts = 6;
     }
 
     // we return an array (of size 5) because we are evaluating each letter in the word and it's position
     public LetterResult[] submitGuess(String guess) {
-        guesses.add(guess); // add a guess to the list
-        return evaluateGuess(guess); // evaluate said guess
+        String formattedGuess = guess.toLowerCase();
+        guesses.add(formattedGuess); // add a guess to the list
+        return evaluateGuess(formattedGuess); // evaluate said guess
     }
 
     public LetterResult[] evaluateGuess(String guess) {
-        // evaluate the guess that was just submitted
+        LetterResult[] result = new LetterResult[5]; //array of size 5 because wordle is always five-letter words. should maybe be a variable if this is subject to change
+
+        char[] guessLetters = guess.toCharArray();
+        char[] secretLetters = secretWord.toCharArray();
+
+        for (int i = 0; i < 5; i++) {
+            if (guessLetters[i] == secretLetters[i]) {
+                result[i] = LetterResult.CORRECT;
+                continue;
+            }
+
+            boolean matched = false; // we need a way to only label a letter absent if it wasn't found anywhere in the actual word
+            for (int j = 0; j < 5; j++) {
+                if (guessLetters[i] == secretLetters[j]) {
+                    result[i] = LetterResult.PRESENT;
+                    matched = true;
+                    break;
+                }
+            }
+
+            if (!matched) {
+                result[i] = LetterResult.ABSENT;
+            }
+
+        }
+        return result;
     }
 
     public boolean isWon() {

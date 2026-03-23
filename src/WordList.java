@@ -46,6 +46,7 @@ public class WordList {
         return wordBank.get(index); // returns the word at that index in wordBank
     }
 
+    // check that the players word was actually a word and not a pile of rubbish
     public boolean isValidWord(String guess) {
         String formattedGuess = guess.toLowerCase();
         return wordBank.contains(formattedGuess);
