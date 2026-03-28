@@ -12,10 +12,10 @@ public class Main {
         String difficulty = player.nextLine();
 
         switch (difficulty) {
-            case "7":
+            case "7" :
                 userFilepath = "some 7 letter word file";
                 break;
-            case "6":
+            case "6" :
                 userFilepath = "some 6 letter words file";
                 break;
             default:
