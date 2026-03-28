@@ -1,13 +1,40 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-void main() {
-    //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-    // to see how IntelliJ IDEA suggests fixing it.
-    IO.println(String.format("Hello and welcome!"));
+import java.util.Scanner;
 
-    for (int i = 1; i <= 5; i++) {
-        //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-        // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        IO.println("i = " + i);
+public class Main {
+
+    public static void main(String[] args) { // apparently required. execution always starts here
+        Scanner player = new Scanner(System.in); // uses scanner to read input from the terminal.
+
+        try {
+            WordList wordList = new WordList("words.txt");
+            String wordOfTheDay = wordList.getRandomWord();
+            Game game = new Game(wordOfTheDay);
+
+            // loops until game over
+            while(!game.isOver()){
+                System.out.print("Enter guess: "); // prompts response on the same line
+                String guess = player.nextLine().toLowerCase();
+
+                if (!wordList.isValidWord(guess)) {
+                    System.out.println("Not a valid word!");
+                    continue;
+                }
+
+                LetterResult[] feedback = game.submitGuess(guess);
+                // display the feedback somehow? display();
+            }
+            if (game.isWon()) {
+                System.out.println("That was the word! You win!");
+                // turn display() should also turn all the words of the last guess green
+            } else {
+                System.out.println("You lost! The word was: " + wordOfTheDay);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
+
 }

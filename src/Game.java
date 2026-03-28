@@ -26,6 +26,7 @@ public class Game {
         char[] guessLetters = guess.toCharArray();
         char[] secretLetters = secretWord.toCharArray();
 
+        // start with the first letter of the guessed word with every letter of the secret word. repeat until we run out of guessed-word letters
         for (int i = 0; i < 5; i++) {
             if (guessLetters[i] == secretLetters[i]) {
                 result[i] = LetterResult.CORRECT;
