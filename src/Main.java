@@ -51,7 +51,6 @@ public class Main {
             System.out.println("Could not find words file. check that the file exists");
         }
 
-
     }
 
 }
