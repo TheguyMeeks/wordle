@@ -21,20 +21,20 @@ public class Game {
     }
 
     public LetterResult[] evaluateGuess(String guess) {
-        LetterResult[] result = new LetterResult[5]; //array of size 5 because wordle is always five-letter words. should maybe be a variable if this is subject to change
+        LetterResult[] result = new LetterResult[secretWord.length()]; //array of size 5 because wordle is always five-letter words. should maybe be a variable if this is subject to change
 
         char[] guessLetters = guess.toCharArray();
         char[] secretLetters = secretWord.toCharArray();
 
         // start with the first letter of the guessed word with every letter of the secret word. repeat until we run out of guessed-word letters
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < secretWord.length(); i++) {
             if (guessLetters[i] == secretLetters[i]) {
                 result[i] = LetterResult.CORRECT;
                 continue;
             }
 
             boolean matched = false; // we need a way to only label a letter absent if it wasn't found anywhere in the actual word
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < secretWord.length(); j++) {
                 if (guessLetters[i] == secretLetters[j]) {
                     result[i] = LetterResult.PRESENT;
                     matched = true;
