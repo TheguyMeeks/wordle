@@ -38,7 +38,7 @@ public class Main {
                 }
 
                 LetterResult[] feedback = game.submitGuess(guess);
-                // display the feedback somehow? display();
+                game.display(feedback);
             }
             if (game.isWon()) {
                 System.out.println("That was the word! You win!");

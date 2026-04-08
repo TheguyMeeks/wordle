@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Game {
@@ -61,5 +62,9 @@ public class Game {
 
     public boolean isOver() {
         return isWon() || guesses.size() >= maxAttempts;
+    }
+
+    public void display(LetterResult[] result) {
+        System.out.println(Arrays.toString(result));
     }
 }
