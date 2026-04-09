@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="1000.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="wordle.WordleAppController"
+            >
+
+    <!-- top bar-->
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu text="Quit">
+
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
+    <!-- Center: houses the 30 boxes (5 boxes in 6 rows) -->
+    <center>
+        <StackPane>
+            <padding>
+                <Insets bottom="200"/>
+            </padding>
+            <GridPane fx:id="wordsGrid" alignment="CENTER" hgap="5" vgap="5" gridLinesVisible="false">
+
+            </GridPane>
+        </StackPane>
+    </center>
+
+
+</BorderPane>
+
+

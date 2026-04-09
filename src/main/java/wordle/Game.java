@@ -69,4 +69,9 @@ public class Game {
     public void display(LetterResult[] result) {
         System.out.println(Arrays.toString(result));
     }
+
+    //Getters
+    public String getSecretWord() {
+        return secretWord;
+    }
 }
