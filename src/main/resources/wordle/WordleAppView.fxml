@@ -34,6 +34,16 @@
         </StackPane>
     </center>
 
+    <!-- bottom status bar, place holder for error messages for the time being-->
+    <bottom>
+        <HBox>
+            <children>
+                <Label fx:id="statusLeft" text="Ready" style="-fx-padding: 5;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </children>
+        </HBox>
+    </bottom>
+
 
 </BorderPane>
 

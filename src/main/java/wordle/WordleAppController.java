@@ -23,26 +23,27 @@ public class WordleAppController {
     public Game game;
     public WordList wordList;
     private String wordOfTheDay;
+    private String gameFilepath;
+    private String gameDifficulty;
 
     /**
      * FXML FIELDS
      */
     @FXML private GridPane wordsGrid;
+    @FXML private Label statusLeft;
+
 
     // ===================
     // FXML METHODS RAHHH
     // ===================
     @FXML
     public void initialize() {
-        drawGame();
-        wordList = new WordList("words.txt");
-        wordOfTheDay = wordList.getRandomWord();
-        game = new Game(wordOfTheDay);
+
     }
 
     @FXML
     void menuQuit(ActionEvent event) {
-        Platform.exit(); // this isn't working figure out why later
+        Platform.exit();
     }
 
 
@@ -51,8 +52,8 @@ public class WordleAppController {
     // ===================
 
 
-    private void drawGame() {
-        labels = new Label[6][5]; // that five should be changed with the GETTER
+    private void drawGame(int wordLength) {
+        labels = new Label[6][wordLength]; // that five should be changed with the GETTER
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 5; col++) {
                 StackPane stackPane = new StackPane();
@@ -69,7 +70,35 @@ public class WordleAppController {
         }
     }
 
+    public void playGame(String difficulty) {
+//        this.gameDifficulty = difficulty;
+        switch (difficulty) {
+            case "7" :
+                gameFilepath = "words.txt"; // SUBJECT TO CHANGE
+                break;
+            case "6" :
+                gameFilepath = "words.txt"; // SUBJECT TO CHANGE
+                break;
+            default:
+                gameFilepath = "words.txt";
+        }
+
+        try {
+            wordList = new WordList(gameFilepath);
+            wordOfTheDay = wordList.getRandomWord();
+            game = new Game(wordOfTheDay);
+
+            drawGame(game.getSecretWordLength());
+            
+
+        } catch (Exception e) {
+            statusLeft.setText("Could not find words file. check that the file exists");
+        }
+
+    }
+
     public void handleKeyTyped(KeyEvent keyEvent) {
+        System.out.println("The word is: " + wordOfTheDay); // for debugging purposes
         KeyCode key = keyEvent.getCode();
 
 
@@ -92,9 +121,11 @@ public class WordleAppController {
                 // only here to help with debugging rn
                 if (game.isWon()) {
                     System.out.println("That was the word! You win!");
-                    // turn display() should also turn all the words of the last guess green
+                    statusLeft.setText("That was the word! You win!");
                 } else {
-                    System.out.println("You lost! The word was: " + wordOfTheDay);
+                    if (game.isOver()) {
+                        System.out.println("You lost! The word was: " + wordOfTheDay);
+                    }
                 }
 
                 letterRow++; // move to the next row
@@ -102,7 +133,7 @@ public class WordleAppController {
                 rowGuess = ""; // reset the row guess
             }
         } else {
-
+            statusLeft.setText("Not enough letters");
         }
 
         if (key == KeyCode.BACK_SPACE) {
