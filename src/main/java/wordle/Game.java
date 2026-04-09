@@ -74,4 +74,8 @@ public class Game {
     public String getSecretWord() {
         return secretWord;
     }
+
+    public int getSecretWordLength() {
+        return secretWord.length();
+    }
 }
