@@ -1,4 +1,4 @@
-package com.example.wordlejavafx;
+package wordle;
 
 import javafx.application.Application;
 

@@ -3,6 +3,6 @@ module com.example.wordlejavafx {
     requires javafx.fxml;
 
 
-    opens com.example.wordlejavafx to javafx.fxml;
-    exports com.example.wordlejavafx;
+    opens wordle to javafx.fxml;
+    exports wordle;
 }

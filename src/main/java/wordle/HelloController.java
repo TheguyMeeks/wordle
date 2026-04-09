@@ -1,4 +1,4 @@
-package com.example.wordlejavafx;
+package wordle;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
