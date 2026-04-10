@@ -4,10 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="1000.0" prefWidth="600.0"
+<BorderPane minHeight="850" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="wordle.WordleAppController"
+            fx:id="root"
             >
 
     <!-- top bar-->
@@ -25,7 +26,7 @@
 
     <!-- Center: houses the 30 boxes (5 boxes in 6 rows) -->
     <center>
-        <VBox spacing="100">
+        <VBox spacing="30">
             <padding> <Insets top="100"/> </padding>
             <StackPane>
                 <padding>
@@ -35,14 +36,14 @@
                 </GridPane>
             </StackPane>
             <StackPane>
-                <VBox spacing="6" style="-fx-padding: 10;" prefWidth="400">
-                    <HBox fx:id="keyboardRowOne" alignment="CENTER" spacing="6">
+                <VBox spacing="8" style="-fx-padding: 10;" prefWidth="400">
+                    <HBox fx:id="keyboardRowOne" alignment="CENTER" spacing="7">
 
                     </HBox>
-                    <HBox fx:id="keyboardRowTwo" alignment="CENTER" spacing="6">
+                    <HBox fx:id="keyboardRowTwo" alignment="CENTER" spacing="7">
 
                     </HBox>
-                    <HBox fx:id="keyboardRowThree" alignment="CENTER" spacing="6">
+                    <HBox fx:id="keyboardRowThree" alignment="CENTER" spacing="7">
 
                     </HBox>
                 </VBox>

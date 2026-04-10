@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.BorderPane;
 
 public class WordleAppController {
 
@@ -32,6 +33,7 @@ public class WordleAppController {
     /**
      * FXML FIELDS
      */
+    @FXML private BorderPane root;
     @FXML private GridPane wordsGrid;
     @FXML private Label statusLeft;
     @FXML public HBox keyboardRowOne;
@@ -87,7 +89,7 @@ public class WordleAppController {
             String str = String.valueOf(c);
             key.setText(str);
             key.setOnAction(this::handleKeyboardClicked);
-            key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-size: 17; -fx-font-weight: 700;");
+            key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 57; -fx-text-fill: black; -fx-font-size: 17; -fx-font-weight: 700;");
 
             keyboardRowOne.getChildren().add(key);
         }
@@ -96,7 +98,7 @@ public class WordleAppController {
             String str = String.valueOf(c);
             key.setText(str);
             key.setOnAction(this::handleKeyboardClicked);
-            key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-scale: 100; -fx-font-size: 17; -fx-font-weight: 700;");
+            key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 57; -fx-text-fill: black; -fx-font-scale: 100; -fx-font-size: 17; -fx-font-weight: 700;");
 
             keyboardRowTwo.getChildren().add(key);
         }
@@ -106,9 +108,9 @@ public class WordleAppController {
             key.setText(str);
             key.setOnAction(this::handleKeyboardClicked);
             if (!(s.equals(keysInRowThree[0]) || s.equals(keysInRowThree[keysInRowThree.length - 1]))) {
-                key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-size: 17; -fx-font-weight: 700;");
+                key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 57; -fx-text-fill: black; -fx-font-size: 17; -fx-font-weight: 700;");
             } else {
-                key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 65; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-size: 13; -fx-font-weight: 700;");
+                key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 65; -fx-pref-height: 57; -fx-text-fill: black; -fx-font-size: 13; -fx-font-weight: 700;");
             }
 
             keyboardRowThree.getChildren().add(key);
@@ -116,7 +118,6 @@ public class WordleAppController {
     }
 
     public void playGame(String difficulty) {
-//        this.gameDifficulty = difficulty;
         switch (difficulty) {
             case "7" :
                 gameFilepath = "words.txt"; // SUBJECT TO CHANGE
@@ -140,6 +141,7 @@ public class WordleAppController {
             statusLeft.setText("Could not find words file. check that the file exists");
         }
 
+        Platform.runLater(() -> root.requestFocus());
     }
 
     public void handleKeyTyped(KeyEvent keyEvent) {
@@ -220,40 +222,56 @@ public class WordleAppController {
         String letterClicked = clicked.getText();
         System.out.println(letterClicked);
 
-        if ( !(letterClicked.equals("ENTER") || letterClicked.equals("DELETE")) ) {
+        if (letterClicked.equals("DELETE")) {
+            if (!rowGuess.isEmpty()) {
+                rowGuess = rowGuess.substring(0, rowGuess.length() - 1);
+                labels[letterRow][letterCounter - 1].setText("");
+                letterCounter--;
+            }
+            event.consume();
+            return;
+        }
+
+        if (letterClicked.equals("ENTER")) {
             if (letterCounter < game.getSecretWordLength()) {
-                rowGuess += letterClicked;
-                labels[letterRow][letterCounter].setText(letterClicked);
-                letterCounter++;
+                statusLeft.setText("Not enough letters");
+                event.consume();
+                return;
             }
-        }
-
-        if (letterClicked.equals("ENTER") && rowGuess.length() == game.getSecretWordLength()) {
             if (!wordList.isValidWord(rowGuess)) {
-                System.out.println(rowGuess);
-                System.out.println("Not a valid word!");
-            } else {
-                LetterResult[] feedback = game.submitGuess(rowGuess);
-                displayEvaluation(feedback);
-
-                // only here to help with debugging rn
-                if (game.isWon()) {
-                    System.out.println("That was the word! You win!");
-                    statusLeft.setText("That was the word! You win!");
-                } else {
-                    if (game.isOver()) {
-                        System.out.println("You lost! The word was: " + wordOfTheDay);
-                    }
-                }
-
-                letterRow++; // move to the next row
-                letterCounter = 0; // reset the column marker
-                rowGuess = ""; // reset the row guess
+                System.out.println("your guess was " + rowGuess + " That's not a valid word");
+                statusLeft.setText("Not a valid word!");
+                event.consume();
+                return;
             }
-        } else {
-            statusLeft.setText("Not enough letters");
+
+            // now that we're past the cases where the word is too short or not a valid word, we can safely evaluate it
+            LetterResult[] feedback = game.submitGuess(rowGuess);
+            displayEvaluation(feedback);
+
+            if (game.isWon()) {
+                statusLeft.setText("That was the word! You win!");
+                System.out.println("That was the word! You win!");
+            } else if (game.isOver()) {
+                statusLeft.setText("You lost! The word was: " + wordOfTheDay);
+            }
+
+            letterRow++;
+            letterCounter = 0;
+            rowGuess = "";
+            event.consume();
+            return;
         }
-        event.consume();
+
+        // if it's not enter or delete it's a letter
+        if (letterCounter < game.getSecretWordLength()) {
+            rowGuess += letterClicked;
+            labels[letterRow][letterCounter].setText(letterClicked);
+            letterCounter++;
+        }
+
         System.out.println(event.toString());
+        event.consume();
+        root.requestFocus();
     }
 }
