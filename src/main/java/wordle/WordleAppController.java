@@ -3,13 +3,16 @@ package wordle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 
 public class WordleAppController {
+
 
     /**
      * NORMAL FIELDS
@@ -31,6 +34,9 @@ public class WordleAppController {
      */
     @FXML private GridPane wordsGrid;
     @FXML private Label statusLeft;
+    @FXML public HBox keyboardRowOne;
+    @FXML public HBox keyboardRowTwo;
+    @FXML public HBox keyboardRowThree;
 
 
     // ===================
@@ -68,6 +74,45 @@ public class WordleAppController {
                 wordsGrid.add(stackPane, col, row);
             }
         }
+
+        String keysInRowOne = "QWERTYUIOP";
+        String keysInRowTwo = "ASDFGHJKL";
+        String[] keysInRowThree = {"ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE",};
+
+        char[] lettersRowOne = keysInRowOne.toCharArray();
+        char[] lettersRowTwo = keysInRowTwo.toCharArray();
+
+        for (char c : lettersRowOne) {
+            Button key = new Button();
+            String str = String.valueOf(c);
+            key.setText(str);
+            key.setOnAction(this::handleKeyboardClicked);
+            key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-size: 17; -fx-font-weight: 700;");
+
+            keyboardRowOne.getChildren().add(key);
+        }
+        for (char c : lettersRowTwo) {
+            Button key = new Button();
+            String str = String.valueOf(c);
+            key.setText(str);
+            key.setOnAction(this::handleKeyboardClicked);
+            key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-scale: 100; -fx-font-size: 17; -fx-font-weight: 700;");
+
+            keyboardRowTwo.getChildren().add(key);
+        }
+        for (String s : keysInRowThree) {
+            Button key = new Button();
+            String str = String.valueOf(s);
+            key.setText(str);
+            key.setOnAction(this::handleKeyboardClicked);
+            if (!(s.equals(keysInRowThree[0]) || s.equals(keysInRowThree[keysInRowThree.length - 1]))) {
+                key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 45; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-size: 17; -fx-font-weight: 700;");
+            } else {
+                key.setStyle("-fx-background-color: #c6c9cc; -fx-pref-width: 65; -fx-pref-height: 55; -fx-text-fill: black; -fx-font-size: 13; -fx-font-weight: 700;");
+            }
+
+            keyboardRowThree.getChildren().add(key);
+        }
     }
 
     public void playGame(String difficulty) {
@@ -101,49 +146,50 @@ public class WordleAppController {
         System.out.println("The word is: " + wordOfTheDay); // for debugging purposes
         KeyCode key = keyEvent.getCode();
 
-
-        if (keyEvent.getCode().isLetterKey()) {
-            rowGuess += keyEvent.getText();
-            labels[letterRow][letterCounter].setText(keyEvent.getText().toUpperCase());
-            letterCounter++;
-
-        }
-
-        // replace that five with the getter from game later
-        if (key == KeyCode.ENTER && rowGuess.length() == game.getSecretWordLength()) {
-            if (!wordList.isValidWord(rowGuess)) {
-                System.out.println(rowGuess);
-                System.out.println("Not a valid word!");
-            } else {
-                LetterResult[] feedback = game.submitGuess(rowGuess);
-                displayEvaluation(feedback);
-
-                // only here to help with debugging rn
-                if (game.isWon()) {
-                    System.out.println("That was the word! You win!");
-                    statusLeft.setText("That was the word! You win!");
-                } else {
-                    if (game.isOver()) {
-                        System.out.println("You lost! The word was: " + wordOfTheDay);
-                    }
-                }
-
-                letterRow++; // move to the next row
-                letterCounter = 0; // reset the column marker
-                rowGuess = ""; // reset the row guess
-            }
-        } else {
-            statusLeft.setText("Not enough letters");
-        }
-
         if (key == KeyCode.BACK_SPACE) {
             if (!rowGuess.isEmpty()) {
                 rowGuess = rowGuess.substring(0, rowGuess.length() - 1);
                 labels[letterRow][letterCounter - 1].setText("");
                 letterCounter--;
             }
+            return;
         }
 
+        if (keyEvent.getCode().isLetterKey()) {
+            if (letterCounter < game.getSecretWordLength()) {
+                rowGuess += keyEvent.getText();
+                labels[letterRow][letterCounter].setText(keyEvent.getText().toUpperCase());
+                letterCounter++;
+            }
+            return;
+        }
+
+
+        if (key == KeyCode.ENTER) {
+            if (rowGuess.length() < game.getSecretWordLength()) {
+                statusLeft.setText("Not enough letters");
+                return;
+            }
+            if (!wordList.isValidWord(rowGuess)) {
+                System.out.println("your guess was " + rowGuess + " That's not a valid word");
+                statusLeft.setText("Not a valid word!");
+                return;
+            }
+
+            LetterResult[] feedback = game.submitGuess(rowGuess);
+            displayEvaluation(feedback);
+
+            if (game.isWon()) {
+                statusLeft.setText("That was the word! You win!");
+            } else if (game.isOver()) {
+                System.out.println("You lost! The word was: " + wordOfTheDay);
+                statusLeft.setText("You lost! The word was: " + wordOfTheDay);
+            }
+
+            letterRow++;
+            letterCounter = 0;
+            rowGuess = "";
+        }
 
     }
 
@@ -168,5 +214,46 @@ public class WordleAppController {
         }
     }
 
+    @FXML
+    public void handleKeyboardClicked(ActionEvent event) {
+        Button clicked = (Button) event.getSource();
+        String letterClicked = clicked.getText();
+        System.out.println(letterClicked);
 
+        if ( !(letterClicked.equals("ENTER") || letterClicked.equals("DELETE")) ) {
+            if (letterCounter < game.getSecretWordLength()) {
+                rowGuess += letterClicked;
+                labels[letterRow][letterCounter].setText(letterClicked);
+                letterCounter++;
+            }
+        }
+
+        if (letterClicked.equals("ENTER") && rowGuess.length() == game.getSecretWordLength()) {
+            if (!wordList.isValidWord(rowGuess)) {
+                System.out.println(rowGuess);
+                System.out.println("Not a valid word!");
+            } else {
+                LetterResult[] feedback = game.submitGuess(rowGuess);
+                displayEvaluation(feedback);
+
+                // only here to help with debugging rn
+                if (game.isWon()) {
+                    System.out.println("That was the word! You win!");
+                    statusLeft.setText("That was the word! You win!");
+                } else {
+                    if (game.isOver()) {
+                        System.out.println("You lost! The word was: " + wordOfTheDay);
+                    }
+                }
+
+                letterRow++; // move to the next row
+                letterCounter = 0; // reset the column marker
+                rowGuess = ""; // reset the row guess
+            }
+        } else {
+            statusLeft.setText("Not enough letters");
+        }
+        event.consume();
+        System.out.println(event.toString());
+    }
 }

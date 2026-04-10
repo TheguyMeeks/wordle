@@ -34,6 +34,11 @@ public class GameSetupController {
     // ====================================================
 
     public void launchGame(ActionEvent event) {
+        if (wordTypeOptions.getValue() == null) {
+            statusLabel.setText("Error: Please select a difficulty");
+            return;
+        }
+
         try {
             FXMLLoader loader = new FXMLLoader(WordleApp.class.getResource("WordleAppView.fxml"));
             Stage gameStage = (Stage) titleLabel.getScene().getWindow(); // get the window

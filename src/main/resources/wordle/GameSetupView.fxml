@@ -19,9 +19,9 @@
                     <Label text="Select"/>
                     <ComboBox fx:id="wordTypeOptions"/>
 
-                    <Label fx:id="statusLabel" text=""/>
                     <Button text="Start" onAction="#launchGame"/>
                 </HBox>
+                <Label fx:id="statusLabel" text=""/>
             </VBox>
         </StackPane>
     </center>
